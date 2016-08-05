@@ -1,0 +1,15 @@
+net: "net_train.prototxt"
+test_iter: 50
+test_interval: 500
+base_lr: 0.000025
+gamma: 0.5
+stepsize: 100000
+momentum: 0.9
+weight_decay: 0.005
+lr_policy: "fixed"
+display: 100
+max_iter: 100000
+snapshot: 10000
+snapshot_prefix: "snaps/"
+solver_mode: GPU
+debug_info: 1
