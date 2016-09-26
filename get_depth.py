@@ -68,10 +68,6 @@ parser.add_argument('--log', action='store_true', default=False)
 args = parser.parse_args()
 
 try:
-	os.mkdir(args.output)
-except OSError:
-	print ('Output directory already exists, not creating a new one')
-try:
 	os.mkdir(args.output + "_abs")
 except OSError:
 	print ('Output directory already exists, not creating a new one')
@@ -82,11 +78,8 @@ for snapshot in os.listdir(args.snaps):
 	if not snapshot.endswith("caffemodel"):
 		continue
 	currentSnapDir = snapshot.replace(".caffemodel","")
-	if os.path.exists(args.output + "/" + currentSnapDir):
-		shutil.rmtree(args.output + "/" + currentSnapDir)
 	if os.path.exists(args.output + "_abs/" + currentSnapDir):
 		shutil.rmtree(args.output + "_abs/" + currentSnapDir)
-	os.mkdir(args.output + "/" + currentSnapDir)
 	os.mkdir(args.output + "_abs/" + currentSnapDir)
 	print(currentSnapDir)
 	sys.stdout.flush()
