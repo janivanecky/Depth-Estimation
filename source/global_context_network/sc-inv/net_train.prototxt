@@ -1,0 +1,415 @@
+name: "global_context_network_sc-inv_train"
+
+#INPUTS
+
+    layer {
+      name: "train_color"
+      type: "Data"
+      top: "X"
+      data_param {
+        source: "train_raw2_lmdb/train_raw2_color_298x218.lmdb"
+        backend: LMDB
+        batch_size: 32
+      }
+      transform_param {
+        mean_value: 127
+      }
+    include {
+      phase: TRAIN
+      }
+    }
+    layer {
+      name: "train_depth"
+      type: "Data"
+      top: "gt"
+      data_param {
+        source: "train_raw2_lmdb/train_raw2_depth_37x27.lmdb"
+        backend: LMDB
+        batch_size: 32
+      }
+    transform_param {
+        scale: 0.00390625
+      }
+
+    include {
+      phase: TRAIN
+      }
+    }
+    layer {
+      name: "test_color"
+      type: "Data"
+      top: "X"
+      data_param {
+        source: "test_lmdb/test_color_298x218.lmdb"
+        backend: LMDB
+        batch_size: 32
+      }
+      transform_param {
+          mean_value: 127
+      }
+    include {
+      phase: TEST
+      }
+    }
+    layer {
+      name: "test_depth"
+      type: "Data"
+      top: "gt"
+      data_param {
+        source: "test_lmdb/test_depth_37x27.lmdb"
+        backend: LMDB
+        batch_size: 32
+      }
+    transform_param {
+        scale: 0.00390625
+      }
+
+    include {
+      phase: TEST
+      }
+    }
+    
+# CONVOLUTIONAL
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "X"
+  top: "conv1"
+  param {
+    lr_mult: 0.02
+    decay_mult: 1
+  }
+  param {
+    lr_mult:  0.02
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "conv1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "norm1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult:  0.02
+    decay_mult: 1
+  }
+  param {
+    lr_mult:  0.02
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "norm2"
+  type: "LRN"
+  bottom: "conv2"
+  top: "norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "norm2"
+  top: "conv3"
+  param {
+    lr_mult:  0.02
+    decay_mult: 1
+  }
+  param {
+    lr_mult:  0.02
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult:  0.02
+    decay_mult: 1
+  }
+  param {
+    lr_mult:  0.02
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "conv4"
+  top: "conv4"
+}
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult:  0.02
+    decay_mult: 1
+  }
+  param {
+    lr_mult:  0.02
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "conv5"
+  top: "conv5"
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+
+# MAIN
+
+layer {
+  name: "fc-main"
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc-main"
+  param {
+    decay_mult: 1
+  }
+  param {
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 1024
+    weight_filler {
+      type: "xavier"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "fc-main"
+  top: "fc-main"
+}
+layer {
+  name: "drop6"
+ type: "Dropout"
+  bottom: "fc-main"
+  top: "fc-main"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc-depth"
+  type: "InnerProduct"
+  bottom: "fc-main"
+  top: "fc-depth"
+  param {
+    decay_mult: 1
+    lr_mult:  0.2
+  }
+  param {
+    lr_mult:  0.2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 999
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.5
+    }
+  }
+}
+layer {
+    name: "reshape"
+    type: "Reshape"
+    bottom: "fc-depth"
+    top: "depth"
+    reshape_param {
+      shape {
+        dim: 0  # copy the dimension from below
+        dim: 1
+        dim: 27
+        dim: 37 # infer it from the other dimensions
+      }
+    }
+  }
+  
+# LOSSES
+
+layer {
+  name: "log"
+  type: "Log"
+  bottom: "gt"
+  top: "lnGt"
+  log_param {
+	shift: 0.00392156863
+ 	scale: 0.996078431
+	}
+}
+
+layer {
+  name: "power"
+  type: "Power"
+  bottom: "lnGt"
+  top: "logGt"
+  power_param {
+    power: 1
+    scale: 0.179581
+    shift: 1.0
+  }
+}
+
+layer {
+   name: "mnDepth"
+   type: "MVN"
+   bottom: "depth"
+   top: "depthMN"
+   mvn_param{normalize_variance: false}
+}
+layer {
+   name: "mnGT"
+   type: "MVN"
+   bottom: "logGt"
+   top: "gtMN"
+   mvn_param{normalize_variance: false}
+}
+
+layer {
+  name: "lossMNDepth"
+  type: "EuclideanLoss"
+  bottom: "depthMN"
+  bottom: "gtMN"
+  top: "lossMNDepth"
+  loss_weight: 1
+}
+
+

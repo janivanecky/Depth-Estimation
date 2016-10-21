@@ -1,0 +1,46 @@
+name: "GradientFilter"
+input: "X"
+input_shape {
+  dim: 1
+  dim: 1
+  dim: 320
+  dim: 420
+}
+
+
+layer {
+  name: "gradientFilter"
+  type: "Convolution"
+  bottom: "X"
+  top: "out"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  convolution_param {
+    num_output: 2
+    pad: 0
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+	value: 0
+    }
+  }
+}
+
+
+
+
+
+
+
+  
+
+  
+
