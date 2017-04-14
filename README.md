@@ -23,7 +23,7 @@ Normalized loss is just a squared distance between normalized output depth map a
 
 ## Trained model
 
-You can download the trained model <a href="https://dl.dropboxusercontent.com/u/65091385/model_norm_abs_100k.caffemodel">here</a>.
+You can download the trained model <a href="https://www.dropbox.com/s/rki8o74r7yv0k8d/model_norm_abs_100k.caffemodel?dl=0">here</a>.
 
 ## Results:
 
