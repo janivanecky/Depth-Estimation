@@ -20,7 +20,7 @@ How to process the training dataset:
 11.) Run scripts train_augment0.py, train_augment1.py, train_augment2.py in folder B
 11.) Run create_train_lmdb.sh in folder B and pass it a path to caffe folder as an argument
 12.) You should now have folders 'train_raw0_lmdb' (dataset version Data0), 'train_raw1_lmdb' (dataset version Data1), 'train_raw2_lmdb' (dataset version Data2) in folder B
-*Note: all referenced scripts can be foun in folder 'train'
+*Note: all referenced scripts can be found in folder 'train'
 
 ===================================================
 How to process the testing dataset:
